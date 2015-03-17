@@ -1,0 +1,18 @@
+{
+  "name": "annankatu",
+  "version": "0.0.0",
+  "private": true,
+  "author": "Andre Staltz",
+  "dependencies": {
+    "cyclejs": "0.16.0",
+    "moment": "^2.9.0"
+  },
+  "devDependencies": {
+    "browserify": "9.0.3",
+    "babel": "^4.7.3",
+    "babelify": "^5.0.4"
+  },
+  "scripts": {
+    "browserify": "browserify src/app.js -t babelify -o dist/js/app.js"
+  }
+}
