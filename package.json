@@ -8,11 +8,14 @@
     "moment": "^2.9.0"
   },
   "devDependencies": {
-    "browserify": "9.0.3",
     "babel": "^4.7.3",
-    "babelify": "^5.0.4"
+    "babelify": "^5.0.4",
+    "browserify": "9.0.3",
+    "uglify-js": "^2.4.17"
   },
   "scripts": {
-    "browserify": "browserify src/app.js -t babelify -o dist/js/app.js"
+    "browserify": "browserify src/app.js -t babelify -o dist/js/app.js",
+    "uglify": "uglifyjs dist/js/app.js -o dist/js/app.js",
+    "build": "npm run browserify && npm run uglify"
   }
 }
