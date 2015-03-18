@@ -115,7 +115,7 @@ let view = Cycle.createView(model => {
         h('div', {
           style: {
             width: '100vw',
-            height: '100vh',
+            height: '50vh',
             display: 'flex',
             'align-items': 'center',
             'justify-content': 'center'}}, [
