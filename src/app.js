@@ -10,7 +10,7 @@ let model = Cycle.createModel(() => {
   let movingStarts = moment('2015-03-18 13:00');
   let movingEnds = moment('2015-03-23 08:00');
   let totalDuration = moment.duration(movingEnds.diff(movingStarts)).asMinutes();
-  let now$ = Rx.Observable.interval(5000).map(() => moment());
+  let now$ = Rx.Observable.interval(5000).startWith('!').map(() => moment());
   let progress$ = now$.map(now => {
     let partialDuration = moment.duration(now.diff(movingStarts)).asMinutes();
     return Math.round(
