@@ -10,13 +10,16 @@ let model = Cycle.createModel(() => {
   let movingStarts = moment('2015-03-18 13:00');
   let movingEnds = moment('2015-03-23 08:00');
   let totalDuration = moment.duration(movingEnds.diff(movingStarts)).asMinutes();
-  let now$ = Rx.Observable.interval(5000).startWith('!').map(() => moment());
-  let progress$ = now$.map(now => {
+
+  let now$ = Rx.Observable.interval(500).startWith('!').map(() => moment());
+
+  let floatProgress$ = now$.map(now => {
     let partialDuration = moment.duration(now.diff(movingStarts)).asMinutes();
-    return Math.floor(
-      Math.min(100, Math.max(0, (partialDuration / totalDuration) * 100))
-    );
-  })
+    return Math.min(100, Math.max(0, (partialDuration / totalDuration) * 100));
+  });
+
+  let progress$ = floatProgress$.map(floatProgress => Math.floor(floatProgress));
+
   let timeLeft$ = Rx.Observable.interval(5).map(() => {
     let now = moment();
     let duration = moment.duration(movingEnds.diff(now));
@@ -38,7 +41,7 @@ let model = Cycle.createModel(() => {
             ${msLeft > 0 ? msLeft + ' milliseconds' : ''}
             `;
   });
-  return {progress$, timeLeft$};
+  return {progress$, floatProgress$, timeLeft$};
 });
 
 let view = Cycle.createView(model => {
@@ -74,7 +77,7 @@ let view = Cycle.createView(model => {
     ]);
   }
 
-  function renderProgressBar(progress) {
+  function renderProgressBar(progress, floatProgress) {
     return h('.row', [
       h('.col-md-12', [
         h('.progress', [
@@ -86,7 +89,7 @@ let view = Cycle.createView(model => {
               'aria-valuemax': '100',
             },
             style: {
-              width: `${progress}%`
+              width: `${floatProgress}%`
             }},
             h('span.sr-only', `${progress}% Complete`)
           )
@@ -106,8 +109,9 @@ let view = Cycle.createView(model => {
   return {
     vtree$: Rx.Observable.combineLatest(
       model.get('progress$'),
+      model.get('floatProgress$'),
       model.get('timeLeft$'),
-      (progress, timeLeft) =>
+      (progress, floatProgress, timeLeft) =>
         h('div', {
           style: {
             width: '100vw',
@@ -117,7 +121,7 @@ let view = Cycle.createView(model => {
             'justify-content': 'center'}}, [
           h('div', {style: {width: '90%'}}, [
             renderHeader(progress),
-            renderProgressBar(progress),
+            renderProgressBar(progress, floatProgress),
             progress < 100 ? renderTimeLeft(timeLeft) : null
           ])
         ])
