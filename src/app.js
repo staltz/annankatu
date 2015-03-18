@@ -124,7 +124,7 @@ let view = Cycle.createView(model => {
             position: 'relative',
             padding: '10px',
             borderRadius: '5px',
-            boxShadow: '10px 10px 40px 0px rgba(0,0,0,0.75)',
+            boxShadow: '0 10px 40px 0 rgba(0,0,0,0.75)',
             backgroundColor: 'white'
           }}, [
             renderHeader(progress),
