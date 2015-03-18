@@ -14601,24 +14601,37 @@ var model = Cycle.createModel(function () {
   var movingStarts = moment("2015-03-18 13:00");
   var movingEnds = moment("2015-03-23 08:00");
   var totalDuration = moment.duration(movingEnds.diff(movingStarts)).asMinutes();
-  var now$ = Rx.Observable.interval(1000).map(function () {
+  var now$ = Rx.Observable.interval(5000).map(function () {
     return moment();
   });
   var progress$ = now$.map(function (now) {
     var partialDuration = moment.duration(now.diff(movingStarts)).asMinutes();
     return Math.round(Math.min(100, Math.max(0, partialDuration / totalDuration * 100)));
   });
-  return { progress$: progress$ };
+  var timeLeft$ = Rx.Observable.interval(5).map(function () {
+    var now = moment();
+    var duration = moment.duration(movingEnds.diff(now));
+    var daysLeft = duration.days();
+    var hoursLeft = duration.hours();
+    var minutesLeft = duration.minutes();
+    var secondsLeft = duration.seconds();
+    var msLeft = String(duration.milliseconds());
+    while (msLeft.length < 3) {
+      msLeft = "0" + msLeft;
+    }
+    return "" + (daysLeft > 0 ? daysLeft + " days, " : "") + "\n            " + (hoursLeft > 0 ? hoursLeft + " hours, " : "") + "\n            " + (minutesLeft > 0 ? minutesLeft + " minutes, " : "") + "\n            " + (secondsLeft > 0 ? secondsLeft + " seconds, " : "") + "\n            " + (msLeft > 0 ? msLeft + " milliseconds" : "") + "\n            ";
+  });
+  return { progress$: progress$, timeLeft$: timeLeft$ };
 });
 
 var view = Cycle.createView(function (model) {
-  function renderHeader(progress) {
-    var textStyle = {
-      fontFamily: "Open Sans",
-      fontWeight: "800",
-      color: "#58B957"
-    };
+  var textStyle = {
+    fontFamily: "Open Sans",
+    fontWeight: "800",
+    color: "#58B957"
+  };
 
+  function renderHeader(progress) {
     return h(".row", [h(".col-md-4", [h("h3.text-left", {
       style: mergeStyles(textStyle, {
         margin: "10px 0" }) }, "Vattuniemenranta 2")]), h(".col-md-4", [h("h1.text-center", {
@@ -14640,15 +14653,19 @@ var view = Cycle.createView(function (model) {
       } }, h("span.sr-only", "" + progress + "% Complete"))])])]);
   }
 
+  function renderTimeLeft(timeLeft) {
+    return h(".row", [h(".col-md-12", [h(".text-center", { style: textStyle }, "Just " + timeLeft + " to go")])]);
+  }
+
   return {
-    vtree$: model.get("progress$").map(function (progress) {
+    vtree$: Rx.Observable.combineLatest(model.get("progress$"), model.get("timeLeft$"), function (progress, timeLeft) {
       return h("div", {
         style: {
           width: "100vw",
           height: "100vh",
           display: "flex",
           "align-items": "center",
-          "justify-content": "center" } }, [h("div", { style: { width: "90%" } }, [renderHeader(progress), renderProgressBar(progress)])]);
+          "justify-content": "center" } }, [h("div", { style: { width: "90%" } }, [renderHeader(progress), renderProgressBar(progress), renderTimeLeft(timeLeft)])]);
     })
   };
 });
