@@ -13,7 +13,7 @@ let model = Cycle.createModel(() => {
   let now$ = Rx.Observable.interval(5000).startWith('!').map(() => moment());
   let progress$ = now$.map(now => {
     let partialDuration = moment.duration(now.diff(movingStarts)).asMinutes();
-    return Math.round(
+    return Math.floor(
       Math.min(100, Math.max(0, (partialDuration / totalDuration) * 100))
     );
   })
@@ -115,7 +115,7 @@ let view = Cycle.createView(model => {
           h('div', {style: {width: '90%'}}, [
             renderHeader(progress),
             renderProgressBar(progress),
-            renderTimeLeft(timeLeft)
+            progress < 100 ? renderTimeLeft(timeLeft) : null
           ])
         ])
     )
