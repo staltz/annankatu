@@ -28,6 +28,9 @@ let model = Cycle.createModel(() => {
     while (msLeft.length < 3) {
       msLeft = `0${msLeft}`;
     }
+    if (msLeft.length >= 4) {
+      msLeft = '999';
+    }
     return `${daysLeft > 0 ? daysLeft + ' days, ' : ''}
             ${hoursLeft > 0 ? hoursLeft + ' hours, ' : ''}
             ${minutesLeft > 0 ? minutesLeft + ' minutes, ' : ''}
