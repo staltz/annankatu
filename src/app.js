@@ -119,7 +119,14 @@ let view = Cycle.createView(model => {
             display: 'flex',
             'align-items': 'center',
             'justify-content': 'center'}}, [
-          h('div', {style: {width: '90%'}}, [
+          h('div', {style: {
+            width: '90%',
+            position: 'relative',
+            padding: '10px',
+            borderRadius: '5px',
+            boxShadow: '10px 10px 40px 0px rgba(0,0,0,0.75)',
+            backgroundColor: 'white'
+          }}, [
             renderHeader(progress),
             renderProgressBar(progress, floatProgress),
             progress < 100 ? renderTimeLeft(timeLeft) : null
