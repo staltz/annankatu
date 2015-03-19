@@ -168,6 +168,7 @@ class OfficesMap {
       title: 'The New Futurice Office'
     });
 
+    this.update(null, element);
     return element;
   }
 
@@ -181,7 +182,8 @@ class OfficesMap {
     // How much we have traveled already
     let traveledPath = domNode.officesMap.pathCoordinates.slice(0, idx);
     if (!!domNode.officesMap.traveledPoly) {
-      domNode.officesMap.traveledPoly.setMap(null)
+      domNode.officesMap.traveledPoly.setMap(null);
+      domNode.officesMap.traveledPoly = null;
     }
     domNode.officesMap.traveledPoly = new google.maps.Polyline({
       path: traveledPath,
@@ -191,12 +193,14 @@ class OfficesMap {
       strokeWeight: 6
     });
     domNode.officesMap.traveledPoly.setMap(domNode.officesMap.map);
+    traveledPath = null;
 
     // The rest of the way to the new office
     // -1 for the first bit (line needs two ends)
     let futurePath = domNode.officesMap.pathCoordinates.slice(idx - 1);
     if (!!domNode.officesMap.futurePoly) {
       domNode.officesMap.futurePoly.setMap(null);
+      domNode.officesMap.futurePoly = null;
     }
     domNode.officesMap.futurePoly = new google.maps.Polyline({
       path: futurePath,
@@ -206,6 +210,7 @@ class OfficesMap {
       strokeWeight: 2
     });
     domNode.officesMap.futurePoly.setMap(domNode.officesMap.map);
+    futurePath = null;
   }
 
   destroy(domNode) { }

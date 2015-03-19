@@ -1,6 +1,8 @@
 import Cycle from 'cyclejs';
+import moment from 'moment';
 import Immutable from 'immutable';
 import OfficesMap from './offices-map';
+import './time-counter';
 let Rx = Cycle.Rx;
 let h = Cycle.h;
 
@@ -18,7 +20,7 @@ let model = Cycle.createModel(() => {
   let movingEnds = moment('2015-03-23 08:00');
   let totalDuration = moment.duration(movingEnds.diff(movingStarts)).asMinutes();
 
-  let now$ = Rx.Observable.interval(500).startWith('!').map(() => moment());
+  let now$ = Rx.Observable.interval(1000).startWith(0).map(() => moment());
 
   let floatProgress$ = now$.map(now => {
     let partialDuration = moment.duration(now.diff(movingStarts)).asMinutes();
@@ -27,28 +29,11 @@ let model = Cycle.createModel(() => {
 
   let progress$ = floatProgress$.map(floatProgress => Math.floor(floatProgress));
 
-  let timeLeft$ = Rx.Observable.interval(5).map(() => {
-    let now = moment();
-    let duration = moment.duration(movingEnds.diff(now));
-    let daysLeft = duration.days();
-    let hoursLeft = duration.hours();
-    let minutesLeft = duration.minutes();
-    let secondsLeft = duration.seconds();
-    let msLeft = String(duration.milliseconds());
-    while (msLeft.length < 3) {
-      msLeft = `0${msLeft}`;
-    }
-    if (msLeft.length >= 4) {
-      msLeft = '999';
-    }
-    return `${daysLeft > 0 ? daysLeft + ' days, ' : ''}
-            ${hoursLeft > 0 ? hoursLeft + ' hours, ' : ''}
-            ${minutesLeft > 0 ? minutesLeft + ' minutes, ' : ''}
-            ${secondsLeft > 0 ? secondsLeft + ' seconds, ' : ''}
-            ${msLeft > 0 ? msLeft + ' milliseconds' : ''}
-            `;
-  });
-  return {progress$, floatProgress$, timeLeft$};
+  return {
+    progress$,
+    floatProgress$,
+    movingEnds$: Rx.Observable.just(movingEnds)
+  };
 });
 
 let view = Cycle.createView(model => {
@@ -105,14 +90,6 @@ let view = Cycle.createView(model => {
     ]);
   }
 
-  function renderTimeLeft(timeLeft) {
-    return h('.row', [
-      h('.col-md-12', [
-        h('.text-center', {style: textStyle}, `Just ${timeLeft} to go`)
-      ])
-    ]);
-  }
-
   let progressBoxContainerStyle = {
     width: '100vw',
     height: '50vh',
@@ -134,15 +111,15 @@ let view = Cycle.createView(model => {
     vtree$: Rx.Observable.combineLatest(
       model.get('progress$'),
       model.get('floatProgress$'),
-      model.get('timeLeft$'),
-      (progress, floatProgress, timeLeft) =>
+      model.get('movingEnds$'),
+      (progress, floatProgress, movingEnds) =>
         h('div', [
           new OfficesMap(floatProgress / 100.0),
           h('div', {style: progressBoxContainerStyle}, [
             h('div', {style: progressBoxStyle}, [
               renderHeader(progress),
               renderProgressBar(progress, floatProgress),
-              progress < 100 ? renderTimeLeft(timeLeft) : null
+              progress < 100 ? h('time-counter', {textStyle, movingEnds}) : null
             ])
           ])
         ])
