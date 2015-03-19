@@ -43,7 +43,7 @@ function showGoogleMaps() {
   });
 
   // TODO: Get this from the app.
-  var percentage = 0.21;
+  var percentage = 0.22;
 
   var pathCoordinates = [
     new google.maps.LatLng(oldOfficeCoords[0], oldOfficeCoords[1]),
@@ -69,10 +69,10 @@ function showGoogleMaps() {
   ];
 
   // Let's be optimistic: ceil()
-  var idx = Math.ceil(percentage * pathCoordinates.length);
-  if (idx >= pathCoordinates.length) {
-    idx = pathCoordinates.length;
-  }
+  var idx = Math.min(
+      Math.ceil(percentage * pathCoordinates.length),
+      pathCoordinates.length
+    );
 
   // How much we have traveled already
   var traveledPath = pathCoordinates.slice(0, idx);
@@ -86,6 +86,7 @@ function showGoogleMaps() {
   });
 
   // The rest of the way to the new office
+  // -1 for the first bit (line needs two ends)
   var futurePath = pathCoordinates.slice(idx-1);
 
   var futurePoly = new google.maps.Polyline({
