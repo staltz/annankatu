@@ -5,6 +5,7 @@
   "author": "Andre Staltz",
   "dependencies": {
     "cyclejs": "0.16.0",
+    "immutable": "^3.6.4",
     "moment": "^2.9.0"
   },
   "devDependencies": {

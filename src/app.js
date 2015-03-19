@@ -1,10 +1,16 @@
 import Cycle from 'cyclejs';
+import Immutable from 'immutable';
 import OfficesMap from './offices-map';
 let Rx = Cycle.Rx;
 let h = Cycle.h;
 
 function mergeStyles(...styleObjects) {
-  return styleObjects.reduce((acc, curr) => jQuery.extend(acc, curr), {});
+  let isTruthy = (x => !!x);
+  return styleObjects.filter(isTruthy).reduce((styleA, styleB) => {
+    let mapA = Immutable.Map(styleA);
+    let mapB = Immutable.Map(styleB);
+    return mapA.merge(mapB).toObject(); // notice B first
+  }, {});
 }
 
 let model = Cycle.createModel(() => {
@@ -107,6 +113,23 @@ let view = Cycle.createView(model => {
     ]);
   }
 
+  let progressBoxContainerStyle = {
+    width: '100vw',
+    height: '50vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  };
+
+  let progressBoxStyle = {
+    width: '90%',
+    position: 'relative',
+    padding: '10px',
+    borderRadius: '5px',
+    boxShadow: '0 10px 40px 0 rgba(0,0,0,0.75)',
+    backgroundColor: 'white'
+  };
+
   return {
     vtree$: Rx.Observable.combineLatest(
       model.get('progress$'),
@@ -115,21 +138,8 @@ let view = Cycle.createView(model => {
       (progress, floatProgress, timeLeft) =>
         h('div', [
           new OfficesMap(floatProgress / 100.0),
-          h('div', {
-            style: {
-              width: '100vw',
-              height: '50vh',
-              display: 'flex',
-              'align-items': 'center',
-              'justify-content': 'center'}}, [
-            h('div', {style: {
-              width: '90%',
-              position: 'relative',
-              padding: '10px',
-              borderRadius: '5px',
-              boxShadow: '0 10px 40px 0 rgba(0,0,0,0.75)',
-              backgroundColor: 'white'
-            }}, [
+          h('div', {style: progressBoxContainerStyle}, [
+            h('div', {style: progressBoxStyle}, [
               renderHeader(progress),
               renderProgressBar(progress, floatProgress),
               progress < 100 ? renderTimeLeft(timeLeft) : null
