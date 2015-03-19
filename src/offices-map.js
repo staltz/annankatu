@@ -192,7 +192,7 @@ class OfficesMap {
       geodesic: true,
       strokeColor: 'rgb(52,156,74)',
       strokeOpacity: 1,
-      strokeWeight: 6
+      strokeWeight: 7
     });
     domNode.officesMap.traveledPoly.setMap(domNode.officesMap.map);
     traveledPath = null;
@@ -208,8 +208,8 @@ class OfficesMap {
       path: futurePath,
       geodesic: true,
       strokeColor: 'rgb(52,156,74)',
-      strokeOpacity: 0.6,
-      strokeWeight: 3
+      strokeOpacity: 1,
+      strokeWeight: 2
     });
     domNode.officesMap.futurePoly.setMap(domNode.officesMap.map);
     futurePath = null;
