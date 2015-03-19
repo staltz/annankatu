@@ -1,4 +1,5 @@
 import Cycle from 'cyclejs';
+import OfficesMap from './offices-map';
 let Rx = Cycle.Rx;
 let h = Cycle.h;
 
@@ -112,24 +113,27 @@ let view = Cycle.createView(model => {
       model.get('floatProgress$'),
       model.get('timeLeft$'),
       (progress, floatProgress, timeLeft) =>
-        h('div', {
-          style: {
-            width: '100vw',
-            height: '50vh',
-            display: 'flex',
-            'align-items': 'center',
-            'justify-content': 'center'}}, [
-          h('div', {style: {
-            width: '90%',
-            position: 'relative',
-            padding: '10px',
-            borderRadius: '5px',
-            boxShadow: '0 10px 40px 0 rgba(0,0,0,0.75)',
-            backgroundColor: 'white'
-          }}, [
-            renderHeader(progress),
-            renderProgressBar(progress, floatProgress),
-            progress < 100 ? renderTimeLeft(timeLeft) : null
+        h('div', [
+          new OfficesMap(floatProgress / 100.0),
+          h('div', {
+            style: {
+              width: '100vw',
+              height: '50vh',
+              display: 'flex',
+              'align-items': 'center',
+              'justify-content': 'center'}}, [
+            h('div', {style: {
+              width: '90%',
+              position: 'relative',
+              padding: '10px',
+              borderRadius: '5px',
+              boxShadow: '0 10px 40px 0 rgba(0,0,0,0.75)',
+              backgroundColor: 'white'
+            }}, [
+              renderHeader(progress),
+              renderProgressBar(progress, floatProgress),
+              progress < 100 ? renderTimeLeft(timeLeft) : null
+            ])
           ])
         ])
     )
