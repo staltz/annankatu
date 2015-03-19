@@ -158,14 +158,16 @@ class OfficesMap {
       map: map,
       draggable: false,
       animation: google.maps.Animation.DROP,
-      title: 'The Old Futurice Office'
+      title: 'The Old Futurice Office',
+      icon: 'images/old-logo-marker.png'
     });
     let marker2 = new google.maps.Marker({
       position: newOfficePosition,
       map: map,
       draggable: false,
       animation: google.maps.Animation.DROP,
-      title: 'The New Futurice Office'
+      title: 'The New Futurice Office',
+      icon: 'images/logo-marker.png'
     });
 
     this.update(null, element);
@@ -188,7 +190,7 @@ class OfficesMap {
     domNode.officesMap.traveledPoly = new google.maps.Polyline({
       path: traveledPath,
       geodesic: true,
-      strokeColor: 'rgb(255,82,64)',
+      strokeColor: 'rgb(52,156,74)',
       strokeOpacity: 1,
       strokeWeight: 6
     });
@@ -205,9 +207,9 @@ class OfficesMap {
     domNode.officesMap.futurePoly = new google.maps.Polyline({
       path: futurePath,
       geodesic: true,
-      strokeColor: 'rgb(255,82,64)',
+      strokeColor: 'rgb(52,156,74)',
       strokeOpacity: 0.6,
-      strokeWeight: 2
+      strokeWeight: 3
     });
     domNode.officesMap.futurePoly.setMap(domNode.officesMap.map);
     futurePath = null;
