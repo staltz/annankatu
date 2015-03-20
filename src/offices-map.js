@@ -183,9 +183,9 @@ class OfficesMap {
       panControl: false,
       zoomControl: false,
       mapTypeControl: false,
-      scrollwheel: false,
+      scrollwheel: true,
       center: mapCenterPointPosition,
-      draggable: false,
+      draggable: true,
       styles: mapStyles
     };
 
