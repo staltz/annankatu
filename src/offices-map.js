@@ -197,6 +197,25 @@ class OfficesMap {
     domNode.officesMap.traveledPoly.setMap(domNode.officesMap.map);
     traveledPath = null;
 
+    // Where we are now
+    if (!!domNode.officesMap.olegBike) {
+      domNode.officesMap.olegBike.setPosition(
+        domNode.officesMap.pathCoordinates[idx]
+      );
+    } else {
+      domNode.officesMap.olegBike = new google.maps.Marker({
+        position: domNode.officesMap.pathCoordinates[idx],
+        draggable: false,
+        clickable: true,
+        map: domNode.officesMap.map,
+        title: '@phadej',
+        icon: 'images/olegbike_small.png'
+      });
+      google.maps.event.addListener(domNode.officesMap.olegBike, 'click', () =>
+        window.location.href = 'https://vimeo.com/122725089'
+      );
+    }
+
     // The rest of the way to the new office
     // -1 for the first bit (line needs two ends)
     let futurePath = domNode.officesMap.pathCoordinates.slice(idx - 1);
