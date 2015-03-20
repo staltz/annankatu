@@ -40,7 +40,7 @@ let view = Cycle.createView(model => {
   let textStyle = {
     fontFamily: 'Open Sans',
     fontWeight: '800',
-    color: '#58B957'
+    color: '#389E48'
   };
 
   function renderHeader(progress) {
