@@ -213,6 +213,10 @@ class OfficesMap {
       icon: 'images/logo-marker.png'
     });
 
+    google.maps.event.addListener(marker2, 'click', () =>
+      window.location.href = 'http://www.futurice.com/'
+    );
+
     this.update(null, element);
     return element;
   }
