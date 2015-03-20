@@ -133,17 +133,60 @@ class OfficesMap {
     element.style.left = '0';
     element.style.zIndex = '0';
 
+    let mapColor = "#CCEDE3";
+
+    let commonStylers = [
+      { "color": mapColor }
+    ];
+
+    let mapStyles = [
+      {
+        "stylers": [
+          { "gamma": 0.75 },
+          { "lightness": -4 }
+        ]
+      },{
+        "elementType": "labels",
+        "stylers": [
+          { "visibility": "off" }
+        ]
+      },{
+        "featureType": "road",
+        "stylers": [
+          { "saturation": -40 },
+          { "hue": mapColor }
+        ]
+      },{
+        "featureType": "water",
+        "stylers": [
+          { "color": "#eeeeee" }
+        ]
+      },{
+        "featureType": "landscape",
+        "stylers": commonStylers
+      },{
+        "featureType": "poi",
+        "stylers": commonStylers
+      },{
+        "featureType": "transit",
+        "stylers": commonStylers
+      },{
+        "featureType": "administrative",
+        "stylers": commonStylers
+      }
+    ];
+
     let mapOptions = {
       zoom: 14,
       streetViewControl: false,
       scaleControl: false,
       panControl: false,
       zoomControl: false,
-      mapTypeId: google.maps.MapTypeId.HYBRID,
       mapTypeControl: false,
       scrollwheel: false,
       center: mapCenterPointPosition,
-      draggable: false
+      draggable: false,
+      styles: mapStyles
     };
 
     let map = new google.maps.Map(element, mapOptions);
@@ -190,7 +233,7 @@ class OfficesMap {
     domNode.officesMap.traveledPoly = new google.maps.Polyline({
       path: traveledPath,
       geodesic: true,
-      strokeColor: 'rgb(52,156,74)',
+      strokeColor: 'rgb(0,90,75)',
       strokeOpacity: 1,
       strokeWeight: 7
     });
@@ -209,7 +252,7 @@ class OfficesMap {
         clickable: true,
         map: domNode.officesMap.map,
         title: '@phadej',
-        icon: 'images/olegbike_small.png'
+        icon: 'images/olegbike_blk_small.png'
       });
       google.maps.event.addListener(domNode.officesMap.olegBike, 'click', () =>
         window.location.href = 'https://vimeo.com/122725089'
@@ -226,7 +269,7 @@ class OfficesMap {
     domNode.officesMap.futurePoly = new google.maps.Polyline({
       path: futurePath,
       geodesic: true,
-      strokeColor: 'rgb(52,156,74)',
+      strokeColor: 'rgb(0,90,75)',
       strokeOpacity: 1,
       strokeWeight: 2
     });
