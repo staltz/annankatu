@@ -439,7 +439,7 @@ class OfficesMap {
     // Where we are now
     if (!!domNode.officesMap.olegBike) {
       domNode.officesMap.olegBike.setPosition(
-        domNode.officesMap.pathCoordinates[idx]
+        domNode.officesMap.pathCoordinates[idx - 1]
       );
     } else {
       domNode.officesMap.olegBike = new google.maps.Marker({

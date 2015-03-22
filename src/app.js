@@ -18,9 +18,16 @@ function mergeStyles(...styleObjects) {
 let model = Cycle.createModel(() => {
   let movingStarts = moment('2015-03-18 13:00');
   let movingEnds = moment('2015-03-23 08:00');
+  if (moment().isAfter(movingEnds)) {
+    movingStarts = moment().add(1, 'seconds');
+    movingEnds = moment().add(10, 'seconds');
+  }
   let totalDuration = moment.duration(movingEnds.diff(movingStarts)).asMinutes();
 
-  let now$ = Rx.Observable.interval(1000).startWith(0).map(() => moment());
+  let now$ = Rx.Observable.interval(100)
+    .startWith(0)
+    .map(() => moment())
+    .publish().refCount();
 
   let floatProgress$ = now$.map(now => {
     let partialDuration = moment.duration(now.diff(movingStarts)).asMinutes();
@@ -29,9 +36,16 @@ let model = Cycle.createModel(() => {
 
   let progress$ = floatProgress$.map(floatProgress => Math.floor(floatProgress));
 
+  let showVideo$ = progress$
+    .filter(x => x === 100)
+    .delay(2000)
+    .map(() => true)
+    .startWith(false);
+
   return {
     progress$,
     floatProgress$,
+    showVideo$,
     movingEnds$: Rx.Observable.just(movingEnds)
   };
 });
@@ -90,6 +104,23 @@ let view = Cycle.createView(model => {
     ]);
   }
 
+  function renderDeckClearingVideo() {
+    return h('iframe', {
+      width: '500',
+      height: '500',
+      src: 'https://www.youtube.com/embed/2ZFIyWew5Ys?autoplay=1&controls=0',
+      frameborder: '0',
+      allowfullscreen: 'true',
+      style: {
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%'
+      }
+    });
+  }
+
   let progressBoxContainerStyle = {
     width: '100vw',
     height: '50vh',
@@ -112,17 +143,19 @@ let view = Cycle.createView(model => {
       model.get('progress$'),
       model.get('floatProgress$'),
       model.get('movingEnds$'),
-      (progress, floatProgress, movingEnds) =>
-        h('div', [
-          new OfficesMap(floatProgress / 100.0),
-          h('div', {style: progressBoxContainerStyle}, [
-            h('div', {style: progressBoxStyle}, [
-              renderHeader(progress),
-              renderProgressBar(progress, floatProgress),
-              progress < 100 ? h('time-counter', {textStyle, movingEnds}) : null
+      model.get('showVideo$'),
+      (progress, floatProgress, movingEnds, showVideo) =>
+        showVideo ? renderDeckClearingVideo() :
+          h('div', [
+            new OfficesMap(floatProgress / 100.0),
+            h('div', {style: progressBoxContainerStyle}, [
+              h('div', {style: progressBoxStyle}, [
+                renderHeader(progress),
+                renderProgressBar(progress, floatProgress),
+                progress < 100 ? h('time-counter', {textStyle, movingEnds}) : null
+              ])
             ])
           ])
-        ])
     )
   };
 });
