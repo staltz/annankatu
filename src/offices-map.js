@@ -448,7 +448,9 @@ class OfficesMap {
         clickable: true,
         map: domNode.officesMap.map,
         title: '@phadej',
-        icon: 'images/olegbike_blk_small.png'
+        icon: 'images/olegbike_small.gif',
+        // http://stackoverflow.com/questions/14603383/google-maps-js-api-v3-and-looping-animated-gifs
+        optimized: false
       });
       google.maps.event.addListener(domNode.officesMap.olegBike, 'click', () =>
         window.location.href = 'https://vimeo.com/122725089'
